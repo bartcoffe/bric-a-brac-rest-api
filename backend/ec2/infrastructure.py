@@ -58,8 +58,6 @@ class Ec2(cdk.Stack):
             machine_image=ec2.MachineImage.latest_amazon_linux(),
         )
 
-        self.instance.add_security_group(database.db_ec2_sg)
-
         bricabrac_drf = assets.Asset(self, "drf_asset", path='backend/ec2/bric-a-brac-drf')
         bricabrac_drf.grant_read(self.instance)
 

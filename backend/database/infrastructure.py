@@ -10,21 +10,21 @@ class Database(cdk.Stack):
                  **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        self.db_ec2_sg = ec2.SecurityGroup(
+        db_ec2_sg = ec2.SecurityGroup(
             self,
             'db_ec2_sg',
             vpc=vpc,
-            allow_all_outbound=True,
+            allow_all_outbound=False,
         )
-        self.db_ec2_sg.add_ingress_rule(
-            peer=ec2.Peer.any_ipv4(),
+        db_ec2_sg.add_ingress_rule(
+            peer=ec2.Peer.ipv4('10.0.0.0/24'),
             connection=ec2.Port.tcp(5432),
-            description='allow db traffic',
+            description='allow ingress db traffic',
         )
-        self.db_ec2_sg.add_ingress_rule(
-            peer=ec2.Peer.any_ipv6(),
-            connection=ec2.Port.tcp(5432),
-            description='allow db traffic',
+        db_ec2_sg.add_egress_rule(
+            peer=ec2.Peer.ipv4('10.0.0.0/24'),
+            connection=ec2.Port.all_traffic(),
+            description='allow egress db traffic',
         )
 
         self.db = rds.DatabaseInstance(
@@ -40,5 +40,5 @@ class Database(cdk.Stack):
             backup_retention=cdk.Duration.days(0),
             delete_automated_backups=True,
             removal_policy=cdk.RemovalPolicy.DESTROY,
-            security_groups=[self.db_ec2_sg],
+            security_groups=[db_ec2_sg],
         )

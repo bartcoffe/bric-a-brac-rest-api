@@ -20,7 +20,7 @@ class Vpc(cdk.Stack):
             subnet_configuration=[
                 ec2.SubnetConfiguration(
                     name='public',
-                    cidr_mask=24,
+                    cidr_mask=28,
                     subnet_type=ec2.SubnetType.PUBLIC,
                 ),
                 ec2.SubnetConfiguration(
