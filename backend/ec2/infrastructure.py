@@ -41,8 +41,6 @@ class Ec2(cdk.Stack):
                     'AmazonSSMManagedInstanceCore'),
                 iam.ManagedPolicy.from_aws_managed_policy_name(
                     'AmazonS3ReadOnlyAccess'),
-                iam.ManagedPolicy.from_aws_managed_policy_name(
-                    'AmazonRDSFullAccess'),
             ],
         )
 
