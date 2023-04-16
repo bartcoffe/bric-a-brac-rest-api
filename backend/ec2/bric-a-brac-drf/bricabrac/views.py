@@ -56,3 +56,7 @@ def flashcard(request, id):
     elif request.method == 'DELETE':
         flashcard.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET', 'DELETE'])
+def test(request):
+    return Response('xd', status=status.HTTP_200_OK)

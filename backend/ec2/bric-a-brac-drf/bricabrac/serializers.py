@@ -22,8 +22,8 @@ class FlashcardSerializer(serializers.ModelSerializer):
         model = Flashcard
         fields = [
             'id',
-            'user_id',
-            'category_id',
+            'user',
+            'category',
             'code',
             'description',
             'hashtag',

@@ -78,6 +78,8 @@ class Ec2(cdk.Stack):
             "export DB_USER=postgres && echo export DB_USER=postgres >> /etc/environment",
             "export DB_PASSWORD=password && echo export DB_PASSWORD=password >> /etc/environment",
             f"export SECRET_KEY={secrets.token_hex(100)} && echo export SECRET_KEY={secrets.token_hex(100)} >> /etc/environment",
+            "python3 manage.py migrate bricabrac",
+            # "python3 manage.py runserver 0.0.0.0:80",
         ]
 
         self.instance.add_user_data(*user_data)

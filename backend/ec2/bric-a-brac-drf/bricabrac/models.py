@@ -26,8 +26,8 @@ class Status(models.Model):
 
 class Flashcard(models.Model):
     id = models.CharField(primary_key=True, max_length=50)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     code = models.CharField(max_length=2000)
     description = models.CharField(max_length=2000)
     hashtag = models.CharField(max_length=50)
