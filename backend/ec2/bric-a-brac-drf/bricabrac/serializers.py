@@ -16,8 +16,10 @@ class StatusSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class FlashcardSerializer(serializers.ModelSerializer):
-
+class FlashcardGetSerializer(serializers.ModelSerializer):
+    status = serializers.SlugRelatedField(many=False, read_only=True, slug_field='name')
+    user = serializers.SlugRelatedField(many=False, read_only=True, slug_field='username')
+    category = serializers.SlugRelatedField(many=False, read_only=True, slug_field='name')
     class Meta:
         model = Flashcard
         fields = [
@@ -28,4 +30,17 @@ class FlashcardSerializer(serializers.ModelSerializer):
             'description',
             'hashtag',
             'status',
+        ]
+
+class FlashcardPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flashcard
+        fields = [
+            'id',
+            'user',
+            'category',
+            'code',
+            'description',
+            'hashtag',
+            'status'
         ]
