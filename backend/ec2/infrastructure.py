@@ -65,7 +65,7 @@ class Ec2(cdk.Stack):
             #install needed software
             "yum update -y",
             "amazon-linux-extras install python3.8 -y",
-            "yum install -y nginx",
+            "amazon-linux-extras install nginx1 -y",
             "PATH=$PATH:/usr/local/bin && echo PATH=$PATH:/usr/local/bin >> /etc/environment",
             #download django app
             f"aws s3 cp {bricabrac_drf.s3_object_url} srv/bricabrac_drf",
@@ -80,10 +80,14 @@ class Ec2(cdk.Stack):
             f"export SECRET_KEY={secrets.token_hex(100)} && echo export SECRET_KEY={secrets.token_hex(100)} >> /etc/environment",
             "env > bricabrac.env",
             #set up server
-            "python3.8 manage.py migrate bricabrac",
+            # "python3.8 manage.py migrate bricabrac",
             "ln -s /my_services/bricabrac.service /etc/systemd/system/",
+            "ln -s /locations.conf /etc/nginx/default.d/",
+            "rm -rf /usr/share/nginx/html",
+            "ln -s /html /usr/share/nginx/",
             "systemctl start bricabrac",
-            # "python3 manage.py runserver 0.0.0.0:80",
+            "systemctl start nginx"
+
         ]
 
         self.instance.add_user_data(*user_data)

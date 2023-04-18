@@ -6,4 +6,4 @@ User=root
 Group=root
 WorkingDirectory=/
 EnvironmentFile=/bricabrac.env
-ExecStart=/usr/local/bin/gunicorn -b 0.0.0.0:80 bricabrac.wsgi:application
+ExecStart=/usr/local/bin/gunicorn bricabrac.wsgi:application --config /gunicorn.conf.py
