@@ -80,7 +80,7 @@ class Ec2(cdk.Stack):
             f"export SECRET_KEY={secrets.token_hex(100)} && echo export SECRET_KEY={secrets.token_hex(100)} >> /etc/environment",
             "env > bricabrac.env",
             #set up server
-            # "python3.8 manage.py migrate bricabrac",
+            "python3.8 manage.py migrate bricabrac",
             "ln -s /my_services/bricabrac.service /etc/systemd/system/",
             "ln -s /locations.conf /etc/nginx/default.d/",
             "rm -rf /usr/share/nginx/html",
