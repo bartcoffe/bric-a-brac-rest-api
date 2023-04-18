@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+
 @api_view(['GET', 'POST'])
 def categories(request):
     if request.method == 'GET':
@@ -16,7 +17,8 @@ def categories(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
+
 @api_view(['GET', 'POST'])
 def statuses(request):
     if request.method == 'GET':
@@ -38,20 +40,20 @@ def flashcards(request):
         return Response(serializer.data)
     if request.method == 'POST':
         category_dict = {
-        'python':1,
-        'sql':2,
-        'javascript':3,
-        'java':4,
-        'c++':5,
-        'go':6,
+            'python': 1,
+            'sql': 2,
+            'javascript': 3,
+            'java': 4,
+            'c++': 5,
+            'go': 6,
         }
 
         status_dict = {
-            'new':1,
-            'easy':2,
-            'moderate':3,
-            'ratherHard':4,
-            'hard':5,
+            'new': 1,
+            'easy': 2,
+            'moderate': 3,
+            'ratherHard': 4,
+            'hard': 5,
         }
         data = request.data
         data['user'] = User.objects.get(username=data['user']).id
@@ -61,7 +63,7 @@ def flashcards(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
 
 @api_view(['GET', 'DELETE'])
 def flashcard(request, id):

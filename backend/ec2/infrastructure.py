@@ -87,7 +87,6 @@ class Ec2(cdk.Stack):
             "ln -s /html /usr/share/nginx/",
             "systemctl start bricabrac",
             "systemctl start nginx"
-
         ]
 
         self.instance.add_user_data(*user_data)
