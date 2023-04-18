@@ -6,13 +6,13 @@ import aws_cdk.aws_rds as rds
 from constructs import Construct
 import secrets
 
+
 class Ec2(cdk.Stack):
 
-    def __init__(self, scope: Construct, construct_id: str,
-                 vpc: ec2.Vpc, database: rds.DatabaseInstance, **kwargs):
+    def __init__(self, scope: Construct, construct_id: str, vpc: ec2.Vpc,
+                 database: rds.DatabaseInstance, **kwargs):
         super().__init__(scope, construct_id, **kwargs)
 
-        
         drf_sg = ec2.SecurityGroup(
             self,
             'drf_sg',
@@ -53,28 +53,36 @@ class Ec2(cdk.Stack):
             security_group=drf_sg,
             instance_type=ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE2,
                                               ec2.InstanceSize.MICRO),
-            machine_image=ec2.MachineImage.latest_amazon_linux(),
-        )
+            machine_image=ec2.AmazonLinuxImage(
+                generation=ec2.AmazonLinuxGeneration.AMAZON_LINUX_2))
 
-        bricabrac_drf = assets.Asset(self, "drf_asset", path='backend/ec2/bric-a-brac-drf')
+        bricabrac_drf = assets.Asset(self,
+                                     "drf_asset",
+                                     path='backend/ec2/bric-a-brac-drf')
         bricabrac_drf.grant_read(self.instance)
 
-
         user_data = [
-            f"aws s3 cp {bricabrac_drf.s3_object_url} srv/bricabrac_drf",
-            "yum install -y python38 python38-devel",
+            #install needed software
+            "yum update -y",
+            "amazon-linux-extras install python3.8 -y",
+            "yum install -y nginx",
             "PATH=$PATH:/usr/local/bin && echo PATH=$PATH:/usr/local/bin >> /etc/environment",
-            "curl -O https://bootstrap.pypa.io/get-pip.py",
-            "python3 get-pip.py",
+            #download django app
+            f"aws s3 cp {bricabrac_drf.s3_object_url} srv/bricabrac_drf",
             "unzip /srv/bricabrac_drf",
-            "pip3 install -r requirements.txt",
+            "pip3.8 install -r requirements.txt",
+            #set up environment
             f"export DB_HOST={database.db.db_instance_endpoint_address} && echo export DB_HOST={database.db.db_instance_endpoint_address} >> /etc/environment",
             f"export DB_PORT={database.db.db_instance_endpoint_port} && echo export DB_PORT={database.db.db_instance_endpoint_port} >> /etc/environment",
             "export export DB_NAME=bricabrac && echo export DB_NAME=bricabrac >> /etc/environment",
             "export DB_USER=postgres && echo export DB_USER=postgres >> /etc/environment",
             "export DB_PASSWORD=password && echo export DB_PASSWORD=password >> /etc/environment",
             f"export SECRET_KEY={secrets.token_hex(100)} && echo export SECRET_KEY={secrets.token_hex(100)} >> /etc/environment",
-            "python3 manage.py migrate bricabrac",
+            "env > bricabrac.env",
+            #set up server
+            "python3.8 manage.py migrate bricabrac",
+            "ln -s /my_services/bricabrac.service /etc/systemd/system/",
+            "systemctl start bricabrac",
             # "python3 manage.py runserver 0.0.0.0:80",
         ]
 

@@ -34,6 +34,7 @@ class Database(cdk.Stack):
             vpc=vpc,
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_ISOLATED),
             engine=rds.DatabaseInstanceEngine.postgres(version=rds.PostgresEngineVersion.VER_15_2),
+            allocated_storage=5,
             credentials=rds.Credentials.from_password('postgres', cdk.SecretValue.unsafe_plain_text('password')),
             instance_type=ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3,
                                               ec2.InstanceSize.MICRO),
